@@ -1,4 +1,5 @@
 import csv
+import os
 
 from flask import Flask, request, jsonify
 from elasticsearch import Elasticsearch
