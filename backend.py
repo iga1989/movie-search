@@ -43,7 +43,7 @@ def filter_movies():
 
     # add filters to the bool query based on the provided parameters
     if name:
-        bool_query["bool"]["must"].append({"match": {"name": name}})
+        bool_query["bool"]["must"].append({"match": {"name.keyword": name}})
     if actors:
         bool_query["bool"]["must"].append({"match": {"actors": actors}})
     if genre:
@@ -66,8 +66,8 @@ def insert_movies(filename):
                 movie = {
                     "name": row["movie_title"],
                     "actors": row["actor_1_name"],
-                    # "genre": row["genres"],
-                    # "release_date": row["title_year"]
+                    "genre": row["genres"],
+                    "release_date": row["title_year"]
                 }
                 es.index(index="movies", body=movie)
         print("Movies inserted successfully.")
