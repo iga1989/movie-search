@@ -55,15 +55,9 @@ def filter_movies():
     # add filters to the bool query based on the provided parameters
     if name:
         bool_query["bool"]["must"].append({"match": {"content": name}})
-        # bool_query
-    # if actors:
-    #     bool_query["bool"]["must"].append({"match": {"actors": actors}})
-    # if genre:
-    #     bool_query["bool"]["must"].append({"match": {"genre": genre}})
-    # if date:
-    #     bool_query["bool"]["must"].append({"match": {"release_date": date}})
-    # create the Elasticsearch query
+
     query = {
+        "_source": ["filename"],  # only return what you need
         "size": 1000,
         "query": bool_query
     }
