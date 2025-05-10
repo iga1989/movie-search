@@ -64,6 +64,7 @@ def filter_movies():
     #     bool_query["bool"]["must"].append({"match": {"release_date": date}})
     # create the Elasticsearch query
     query = {
+        "size": 1000,
         "query": bool_query
     }
     # search and return the movies
