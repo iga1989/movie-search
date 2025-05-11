@@ -67,24 +67,36 @@ def filter_movies():
 
 def insert_documents(pdf_folder):
     try:
-        # Loop through all PDFs in the folder
         for filename in os.listdir(pdf_folder):
             if filename.endswith(".pdf"):
+                # Check if the document already exists
+                query = {
+                    "query": {
+                        "term": {
+                            "filename.keyword": filename
+                        }
+                    }
+                }
+                result = es.search(index="pdf_documents", body=query)
+
+                if result['hits']['total']['value'] > 0:
+                    print(f"Skipping already indexed file: {filename}")
+                    continue
+
                 pdf_path = os.path.join(pdf_folder, filename)
 
                 # Extract text from PDF
                 with pdfplumber.open(pdf_path) as pdf:
                     text = ""
                     for page in pdf.pages:
-                        text += page.extract_text() or ""  # extract_text() can return None
+                        text += page.extract_text() or ""
 
-                # Prepare the document for Elasticsearch
+                # Prepare and index the document
                 doc = {
                     "filename": filename,
                     "content": text
                 }
 
-                # Index the document
                 res = es.index(index="pdf_documents", document=doc)
                 print(f"Indexed {filename} with id {res['_id']}")
         print("Documents inserted successfully.")
