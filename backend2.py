@@ -43,27 +43,16 @@ def search_movies(query):
 def filter_movies():
     # create a bool query to filter the movies
     name = request.args.get('name')
-    # actors = request.args.get('actors')
-    # genre = request.args.get('genre')
-    # date = request.args.get('date')
-    bool_query = {
-        "bool": {
-            "must": []
-        }
-    }
-
-    # add filters to the bool query based on the provided parameters
-    if name:
-        bool_query["bool"]["must"].append({"match": {"content": name}})
-
     query = {
         "_source": ["filename"],  # only return what you need
-        "size": 1000,
-        "query": bool_query
+        "size": 10000,
+        "query": {
+            "match_phrase": {
+                "content": name.upper()
+            }
+        }
     }
-    # search and return the movies
     return search_movies(query)
-
 
 def insert_documents(pdf_folder):
     try:
